@@ -1,0 +1,33 @@
+<script type="text/javascript">
+    RED.nodes.registerType('charge', {
+        category: 'function',
+        color: '#a6bbcf',
+        defaults: {
+            name: {
+                value: ""
+            },
+            querytimerange: {
+                value: 1
+            }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "file.png",
+        label: function () {
+            return this.name || "charge";
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="charge">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+        <label for="node-input-name"><i class="icon-tag"></i> Query time range</label>
+        <input type="number" id="node-input-querytimerange" placeholder="1" value="1">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="charge">
+    <p>A simple node that provides the data for the charge state</p>
+</script>

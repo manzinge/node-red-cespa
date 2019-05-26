@@ -1,0 +1,50 @@
+{
+  "name": "node-red-cespa",
+  "version": "0.0.1",
+  "description": "Usefull nodes to interact with the CESpa telematic system",
+  "node-red": {
+    "nodes": {
+      "charge": "charge/charge.js",
+      "lon-lat": "lon-lat/lon-lat.js",
+      "pressure": "pressure/pressure.js",
+      "acceleration": "acceleration/acceleration.js",
+      "temp-humidity": "temp-humidity/temp-humidity.js",
+      "torque": "torque/torque.js",
+      "gpsspeed": "gpsspeed/gpsspeed.js",
+      "getoperatingmode": "getoperatingmode/getoperatingmode.js",
+      "vehiclespeed": "vehiclespeed/vehiclespeed.js"
+    }
+  },
+  "scripts": {
+    "test": "mocha \"test/**/*_spec.js\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fklement/node-red-cespa.git"
+  },
+  "keywords": [
+    "CESpa",
+    "Node-RED",
+    "fiction2sience",
+    "Team Scotify"
+  ],
+  "author": "Martin Altmann, Maximilian Anzinger, Felix Klement from Team Scotify",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fklement/node-red-cespa/issues"
+  },
+  "homepage": "https://github.com/fklement/node-red-cespa#readme",
+  "dependencies": {
+    "lodash": "^4.17.11",
+    "node-red-contrib-nexmo": "^3.1.1",
+    "node-red-contrib-web-worldmap": "^2.0.12",
+    "request": "^2.88.0",
+    "twilio": "^3.31.0",
+    "urlencode": "^1.1.0"
+  },
+  "devDependencies": {
+    "mocha": "6.1.4",
+    "node-red": "^0.20.5",
+    "node-red-node-test-helper": "^0.2.2"
+  }
+}

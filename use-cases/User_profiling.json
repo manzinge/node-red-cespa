@@ -1,0 +1,480 @@
+[
+    {
+        "id": "fe13aa13.d3177",
+        "type": "tab",
+        "label": "Flow 2",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "c5243309.5f5b28",
+        "type": "inject",
+        "z": "fe13aa13.d3177",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "1",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 110,
+        "y": 160,
+        "wires": [
+            [
+                "754cfd76.8bacec"
+            ]
+        ]
+    },
+    {
+        "id": "ccdd02a4.cb26c8",
+        "type": "getoperatingmode",
+        "z": "fe13aa13.d3177",
+        "name": "",
+        "querytimerange": "2",
+        "x": 330,
+        "y": 280,
+        "wires": [
+            [
+                "f34e5282.6cce2"
+            ]
+        ]
+    },
+    {
+        "id": "754cfd76.8bacec",
+        "type": "vehiclespeed",
+        "z": "fe13aa13.d3177",
+        "name": "",
+        "querytimerange": "2",
+        "x": 330,
+        "y": 160,
+        "wires": [
+            [
+                "f34e5282.6cce2",
+                "c67e95ed.c8b988"
+            ]
+        ]
+    },
+    {
+        "id": "c67e95ed.c8b988",
+        "type": "acceleration",
+        "z": "fe13aa13.d3177",
+        "name": "",
+        "querytimerange": "2",
+        "x": 330,
+        "y": 220,
+        "wires": [
+            [
+                "f34e5282.6cce2",
+                "ccdd02a4.cb26c8"
+            ]
+        ]
+    },
+    {
+        "id": "f34e5282.6cce2",
+        "type": "join",
+        "z": "fe13aa13.d3177",
+        "name": "Joins real data",
+        "mode": "custom",
+        "build": "array",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "",
+        "count": "3",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "num",
+        "reduceFixup": "",
+        "x": 660,
+        "y": 160,
+        "wires": [
+            [
+                "ad099852.32119"
+            ]
+        ]
+    },
+    {
+        "id": "ad099852.32119",
+        "type": "function",
+        "z": "fe13aa13.d3177",
+        "name": "Calculates Driving Score (Real)",
+        "func": "var spd = msg.payload[0].items[0].act_spd;\nconsole.log(\"Spd is: \" +spd);\n\nvar x = msg.payload[1].items[0].x;\nvar y = msg.payload[1].items[0].y;\nvar z = msg.payload[1].items[0].z;\n\nvar em = msg.payload[2].items[0].em_opm;\nconsole.log(\"OM is: \" +em);\n\nvar oldx = flow.get(\"x\");\nvar oldy = flow.get(\"y\");\nvar oldz = flow.get(\"z\");\n\nflow.set(\"x\", x);\nflow.set(\"y\", y);\nflow.set(\"z\", z);\n\nconsole.log(\"X: \"+x+\" Y: \"+y+\" Z: \" +z);\nconsole.log(\"OX: \"+oldx+\" OY: \"+oldy+\" OZ: \" +oldz);\n\nvar xdiff = Math.abs(oldx-x);\nvar ydiff = Math.abs(oldy-y);\nvar zdiff = Math.abs(oldz-z);\n\nvar currentpoints = flow.get(\"points\");\nif(xdiff > 10 || ydiff > 10 || zdiff > 10) {\n    flow.set(\"points\", currentpoints - 20);\n}\nelse if(xdiff > 5 || ydiff > 5 || zdiff > 5) {\n    flow.set(\"points\", currentpoints -10);\n}\nelse if(xdiff > 1 || ydiff > 1 || zdiff > 1) {\n    flow.set(\"points\", currentpoints -5);\n}\ncurrentpoints = flow.get(\"points\");\n\nif(em === 3) {\n    flow.set(\"points\", currentpoints -1);\n}\ncurrentpoints = flow.get(\"points\");\n\nif(spd < 30) {\n    flow.set(\"points\", currentpoints + 3);\n}\nelse if(spd < 70) {\n    flow.set(\"points\", currentpoints + 2);\n}\nelse if(spd < 100){\n    flow.set(\"points\", currentpoints + 1);\n}\nelse {\n    flow.set(\"points\", currentpoints -1);\n}\ncurrentpoints = flow.get(\"points\");\n\nif(currentpoints > 100 || currentpoints < 0 ) {\n    flow.set(\"points\", 50);\n}\n\nconsole.log(\"Your current points are : \" + currentpoints);\n\n\nmsg.payload = currentpoints;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 790,
+        "y": 240,
+        "wires": [
+            [
+                "b08a2d05.837a1",
+                "83e1c587.28412"
+            ]
+        ]
+    },
+    {
+        "id": "9dd4f9d4.95951",
+        "type": "inject",
+        "z": "fe13aa13.d3177",
+        "name": "Setup Flow",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "x": 130,
+        "y": 420,
+        "wires": [
+            [
+                "683dec0b.681a64"
+            ]
+        ]
+    },
+    {
+        "id": "683dec0b.681a64",
+        "type": "change",
+        "z": "fe13aa13.d3177",
+        "name": "Set 0 to x,y,z",
+        "rules": [
+            {
+                "t": "set",
+                "p": "x",
+                "pt": "flow",
+                "to": "0",
+                "tot": "num"
+            },
+            {
+                "t": "set",
+                "p": "y",
+                "pt": "flow",
+                "to": "0",
+                "tot": "num"
+            },
+            {
+                "t": "set",
+                "p": "z",
+                "pt": "flow",
+                "to": "0",
+                "tot": "num"
+            },
+            {
+                "t": "set",
+                "p": "points",
+                "pt": "flow",
+                "to": "50",
+                "tot": "num"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 330,
+        "y": 420,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b08a2d05.837a1",
+        "type": "ui_chart",
+        "z": "fe13aa13.d3177",
+        "name": "",
+        "group": "dbf11417.475698",
+        "order": 0,
+        "width": "10",
+        "height": "7",
+        "label": "chart",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "auto",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": true,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": "10",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "60",
+        "cutout": 0,
+        "useOneColor": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "useOldStyle": false,
+        "outputs": 1,
+        "x": 1090,
+        "y": 120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "92ef57d6.60ea68",
+        "type": "inject",
+        "z": "fe13aa13.d3177",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 120,
+        "y": 480,
+        "wires": [
+            [
+                "f90fc531.7ae148"
+            ]
+        ]
+    },
+    {
+        "id": "60398fe2.fad3c",
+        "type": "join",
+        "z": "fe13aa13.d3177",
+        "name": "Joins simulated data",
+        "mode": "custom",
+        "build": "array",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "",
+        "count": "3",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "num",
+        "reduceFixup": "",
+        "x": 680,
+        "y": 480,
+        "wires": [
+            [
+                "c0b930b7.5ebf1"
+            ]
+        ]
+    },
+    {
+        "id": "c0b930b7.5ebf1",
+        "type": "function",
+        "z": "fe13aa13.d3177",
+        "name": "Calculates Driving Score (Simulated)",
+        "func": "var spd = msg.payload[0];\nconsole.log(\"Spd is: \" +spd);\n\nvar acc = msg.payload[1];\nconsole.log(\"Acceleration is: \" +acc);\n\nvar em = msg.payload[2];\nconsole.log(\"OM is: \" +em);\n\nvar oldacc = flow.get(\"acceleration\");\n\nflow.set(\"acceleration\",acc);\n\nconsole.log(\"Acceleration: \" + acc);\nconsole.log(\"Old Acceleration \" + oldacc);\nvar currentpoints = flow.get(\"points\");\n\nif(acc > 10) {\n    flow.set(\"points\", currentpoints - 4);\n}\nelse if(acc > 5) {\n    flow.set(\"points\", currentpoints -2);\n}\nelse if(acc > 1) {\n    flow.set(\"points\", currentpoints -1);\n}\ncurrentpoints = flow.get(\"points\");\n\nif(em === 3) {\n    flow.set(\"points\", currentpoints -1);\n}\ncurrentpoints = flow.get(\"points\");\n\nif(spd < 30) {\n    flow.set(\"points\", currentpoints + 5);\n}\nelse if(spd < 70) {\n    flow.set(\"points\", currentpoints + 4);\n}\nelse if(spd < 100){\n    flow.set(\"points\", currentpoints + 3);\n}\nelse {\n    flow.set(\"points\", currentpoints -1);\n}\ncurrentpoints = flow.get(\"points\");\nif(currentpoints > 100 || currentpoints < 0) {\n    flow.set(\"points\", 50);\n}\n\nconsole.log(\"Your current points are : \" + currentpoints);\n\n\nmsg.payload = currentpoints;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 790,
+        "y": 560,
+        "wires": [
+            [
+                "8c0766bd.134c28",
+                "525f741b.60024c"
+            ]
+        ]
+    },
+    {
+        "id": "8c0766bd.134c28",
+        "type": "ui_chart",
+        "z": "fe13aa13.d3177",
+        "name": "",
+        "group": "dbf11417.475698",
+        "order": 0,
+        "width": "10",
+        "height": "7",
+        "label": "chart",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "auto",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": true,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": "10",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "60",
+        "cutout": 0,
+        "useOneColor": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "useOldStyle": false,
+        "outputs": 1,
+        "x": 1090,
+        "y": 460,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f90fc531.7ae148",
+        "type": "random",
+        "z": "fe13aa13.d3177",
+        "name": "vehiclespeed",
+        "low": "0",
+        "high": "180",
+        "inte": "true",
+        "property": "payload",
+        "x": 330,
+        "y": 480,
+        "wires": [
+            [
+                "60398fe2.fad3c",
+                "26832a5f.67d01e"
+            ]
+        ]
+    },
+    {
+        "id": "26832a5f.67d01e",
+        "type": "random",
+        "z": "fe13aa13.d3177",
+        "name": "acceleration",
+        "low": "0",
+        "high": "20",
+        "inte": "true",
+        "property": "payload",
+        "x": 330,
+        "y": 540,
+        "wires": [
+            [
+                "60398fe2.fad3c",
+                "5ba39822.b23ef8"
+            ]
+        ]
+    },
+    {
+        "id": "5ba39822.b23ef8",
+        "type": "random",
+        "z": "fe13aa13.d3177",
+        "name": "getoperatingmode",
+        "low": "0",
+        "high": "7",
+        "inte": "true",
+        "property": "payload",
+        "x": 350,
+        "y": 600,
+        "wires": [
+            [
+                "60398fe2.fad3c"
+            ]
+        ]
+    },
+    {
+        "id": "d2e35c4f.167c9",
+        "type": "ui_audio",
+        "z": "fe13aa13.d3177",
+        "name": "Audio",
+        "group": "1326dccf.9d2833",
+        "voice": "en-US",
+        "always": true,
+        "x": 1250,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "525f741b.60024c",
+        "type": "function",
+        "z": "fe13aa13.d3177",
+        "name": "TTS",
+        "func": "if(msg.payload > 100) {\n    msg.payload = \"Very well, good driving\";\n    return msg;\n}\nelse if(msg.payload < 0) {\n    msg.payload = \"You are a terrible driver\";\n    return msg;\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1090,
+        "y": 560,
+        "wires": [
+            [
+                "d2e35c4f.167c9"
+            ]
+        ]
+    },
+    {
+        "id": "2ed727e3.bef1a",
+        "type": "ui_audio",
+        "z": "fe13aa13.d3177",
+        "name": "Audio",
+        "group": "1326dccf.9d2833",
+        "voice": "en-US",
+        "always": true,
+        "x": 1250,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "83e1c587.28412",
+        "type": "function",
+        "z": "fe13aa13.d3177",
+        "name": "TTS",
+        "func": "if(msg.payload > 100) {\n    msg.payload = \"Very well, good driving\";\n    return msg;\n}\nelse if(msg.payload < 0) {\n    msg.payload = \"You are a terrible driver\";\n    return msg;\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1090,
+        "y": 240,
+        "wires": [
+            [
+                "2ed727e3.bef1a"
+            ]
+        ]
+    },
+    {
+        "id": "dbf11417.475698",
+        "type": "ui_group",
+        "z": "",
+        "name": "Driving efficiency",
+        "tab": "18884e7b.b824ca",
+        "disp": true,
+        "width": "11",
+        "collapse": false
+    },
+    {
+        "id": "1326dccf.9d2833",
+        "type": "ui_group",
+        "z": "",
+        "name": "Scotify",
+        "tab": "3a0fbbfa.15cb94",
+        "disp": true,
+        "width": "12",
+        "collapse": false
+    },
+    {
+        "id": "18884e7b.b824ca",
+        "type": "ui_tab",
+        "z": "",
+        "name": "Your points",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "3a0fbbfa.15cb94",
+        "type": "ui_tab",
+        "z": "",
+        "name": "Home",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]

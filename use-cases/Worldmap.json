@@ -1,0 +1,242 @@
+[
+    {
+        "id": "f67fb55a.6c4c88",
+        "type": "inject",
+        "z": "88f72edd.e35518",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "1",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "0.1",
+        "x": 150,
+        "y": 200,
+        "wires": [
+            [
+                "b55dccaf.d80318",
+                "31a3031e.be18d4"
+            ]
+        ]
+    },
+    {
+        "id": "540f1e22.8bc1a8",
+        "type": "function",
+        "z": "88f72edd.e35518",
+        "name": "DrawLine",
+        "func": "var array = [];\nfor(var g=7;g>=0;g--) {\n    if(msg.payload[g] !== 0) {\n        var lat = msg.payload[g][0];\n        var lon = msg.payload[g][1];\n        array.push([lat,lon]);\n    }\n}\nmsg.payload = { \"name\":\"A3090\", \"lat\":lat, \"lon\":lon, \"line\":array};\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 880,
+        "y": 200,
+        "wires": [
+            [
+                "9536bb51.269a08"
+            ]
+        ]
+    },
+    {
+        "id": "b55dccaf.d80318",
+        "type": "random",
+        "z": "88f72edd.e35518",
+        "name": "",
+        "low": "49.4",
+        "high": "49.6",
+        "inte": "false",
+        "property": "payload",
+        "x": 320,
+        "y": 160,
+        "wires": [
+            [
+                "c6a4b85b.c3fb48"
+            ]
+        ]
+    },
+    {
+        "id": "31a3031e.be18d4",
+        "type": "random",
+        "z": "88f72edd.e35518",
+        "name": "",
+        "low": "11",
+        "high": "11.2",
+        "inte": "false",
+        "property": "payload",
+        "x": 320,
+        "y": 240,
+        "wires": [
+            [
+                "c6a4b85b.c3fb48"
+            ]
+        ]
+    },
+    {
+        "id": "c6a4b85b.c3fb48",
+        "type": "join",
+        "z": "88f72edd.e35518",
+        "name": "",
+        "mode": "custom",
+        "build": "array",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "",
+        "count": "2",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 470,
+        "y": 200,
+        "wires": [
+            [
+                "40e4b201.b50084"
+            ]
+        ]
+    },
+    {
+        "id": "9536bb51.269a08",
+        "type": "worldmap",
+        "z": "88f72edd.e35518",
+        "name": "",
+        "lat": "",
+        "lon": "",
+        "zoom": "",
+        "layer": "",
+        "cluster": "",
+        "maxage": "",
+        "usermenu": "show",
+        "layers": "show",
+        "panit": "false",
+        "panlock": "false",
+        "zoomlock": "false",
+        "hiderightclick": "false",
+        "coords": "none",
+        "path": "/worldmap",
+        "x": 1080,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "40e4b201.b50084",
+        "type": "buffer-array",
+        "z": "88f72edd.e35518",
+        "name": "",
+        "bufferLen": "8",
+        "startWhenFilled": false,
+        "x": 670,
+        "y": 200,
+        "wires": [
+            [
+                "540f1e22.8bc1a8",
+                "85787d4f.12fcf"
+            ]
+        ]
+    },
+    {
+        "id": "11850759.3802e1",
+        "type": "lon-lat",
+        "z": "88f72edd.e35518",
+        "name": "",
+        "querytimerange": 1,
+        "x": 410,
+        "y": 400,
+        "wires": [
+            [
+                "459abbb.43a8344"
+            ]
+        ]
+    },
+    {
+        "id": "f86089a.5b3f778",
+        "type": "inject",
+        "z": "88f72edd.e35518",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": "0.1",
+        "x": 140,
+        "y": 400,
+        "wires": [
+            [
+                "11850759.3802e1"
+            ]
+        ]
+    },
+    {
+        "id": "530224f0.95ce2c",
+        "type": "function",
+        "z": "88f72edd.e35518",
+        "name": "DrawLine",
+        "func": "var array = [];\nfor(var g=7;g>=0;g--) {\n    if(msg.payload[g] !== 0) {\n        var lat = msg.payload[g][0];\n        var lon = msg.payload[g][1];\n        array.push([lat,lon]);\n    }\n}\nmsg.payload = { \"name\":\"A3090\", \"lat\":lat, \"lon\":lon, \"line\":array};\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 880,
+        "y": 400,
+        "wires": [
+            [
+                "67ebcdc0.02a43c"
+            ]
+        ]
+    },
+    {
+        "id": "67ebcdc0.02a43c",
+        "type": "worldmap",
+        "z": "88f72edd.e35518",
+        "name": "",
+        "lat": "",
+        "lon": "",
+        "zoom": "",
+        "layer": "",
+        "cluster": "",
+        "maxage": "",
+        "usermenu": "show",
+        "layers": "show",
+        "panit": "false",
+        "panlock": "false",
+        "zoomlock": "false",
+        "hiderightclick": "false",
+        "coords": "none",
+        "path": "/worldmap",
+        "x": 1080,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "459abbb.43a8344",
+        "type": "buffer-array",
+        "z": "88f72edd.e35518",
+        "name": "",
+        "bufferLen": "8",
+        "startWhenFilled": false,
+        "x": 670,
+        "y": 400,
+        "wires": [
+            [
+                "530224f0.95ce2c"
+            ]
+        ]
+    },
+    {
+        "id": "85787d4f.12fcf",
+        "type": "debug",
+        "z": "88f72edd.e35518",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "x": 900,
+        "y": 120,
+        "wires": []
+    }
+]

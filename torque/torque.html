@@ -1,0 +1,35 @@
+<script type="text/javascript">
+    RED.nodes.registerType('torque', {
+        category: 'function',
+        color: '#a6bbcf',
+        defaults: {
+            name: {
+                value: ""
+            },
+            querytimerange: {
+                value: 1
+            }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: function () {
+            return "torque.png";
+        },
+        label: function () {
+            return this.name || "torque";
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="torque">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+        <label for="node-input-name"><i class="icon-tag"></i> Query time range</label>
+        <input type="number" id="node-input-querytimerange" placeholder="1" value="1">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="torque">
+    <p>A simple node that provides the torque</p>
+</script>
