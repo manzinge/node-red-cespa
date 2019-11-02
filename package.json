@@ -35,7 +35,7 @@
   },
   "homepage": "https://github.com/fklement/node-red-cespa#readme",
   "dependencies": {
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.13",
     "node-red-contrib-nexmo": "^3.1.1",
     "node-red-contrib-web-worldmap": "^2.0.12",
     "request": "^2.88.0",
